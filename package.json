@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "deploy": "npm run build && wrangler pages deploy dist/"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.0",
