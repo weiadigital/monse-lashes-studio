@@ -1,0 +1,32 @@
+---
+/**
+ * aviso-de-privacidad.astro — Página obligatoria LFPDPPP
+ * Monse Lashes Studio
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AvisoPrivacidad from '../components/AvisoPrivacidad.astro';
+---
+
+<BaseLayout
+  titulo="Aviso de Privacidad"
+  descripcion="Aviso de privacidad y protección de datos personales de Monse Lashes Studio, en cumplimiento con la LFPDPPP."
+  schema={{
+    nombre: 'Monse Lashes Studio',
+    descripcion: 'Estudio profesional de extensiones de pestañas y cuidado de cejas en Tláhuac, CDMX.',
+    telefono: '5544231890',
+    direccion: 'Calle Hugonotes, Col. Miguel Hidalgo, Tláhuac, CDMX',
+    ciudad: 'Tláhuac',
+    tipoNegocio: 'BeautySalon',
+  }}
+  telefono="5544231890"
+  mensajeWa="Hola, tengo una pregunta sobre el aviso de privacidad"
+>
+  <AvisoPrivacidad
+    negocio="Monse Lashes Studio"
+    domicilio="Calle Hugonotes, Col. Miguel Hidalgo, Tláhuac, CDMX"
+    email=""
+    telefono="55 4423 1890"
+    usaIA={false}
+    nombreIA=""
+  />
+</BaseLayout>

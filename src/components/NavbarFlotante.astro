@@ -1,0 +1,191 @@
+---
+interface NavLink {
+  texto: string;
+  href: string;
+}
+
+interface Props {
+  nombre: string;
+  links?: NavLink[];
+  ctaTexto?: string;
+  ctaUrl?: string;
+  /**
+   * 'oscuro' → texto blanco, transparente sobre hero con imagen oscura (T1, T2)
+   * 'claro'  → texto en --color-text, fondo semi-opaco sobre hero claro (T3+)
+   */
+  modo?: 'claro' | 'oscuro';
+}
+
+const {
+  nombre,
+  links = [],
+  ctaTexto = 'Agendar cita',
+  ctaUrl = '#contacto',
+  modo = 'claro',
+} = Astro.props;
+---
+
+<header class={`navbar navbar--${modo}`} id="navbar" role="banner">
+  <div class="navbar__inner">
+    <a href="#" class="navbar__brand" aria-label={`Inicio — ${nombre}`}>
+      {nombre}
+    </a>
+
+    {links.length > 0 && (
+      <nav class="navbar__nav" aria-label="Navegación principal">
+        <ul class="navbar__links" role="list">
+          {links.map((l) => (
+            <li>
+              <a href={l.href} class="navbar__link">{l.texto}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    <a href={ctaUrl} class="navbar__cta">
+      {ctaTexto}
+    </a>
+  </div>
+</header>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+  }
+
+  /* ── Modo oscuro: sobre imagen de hero ── */
+  .navbar--oscuro {
+    background-color: transparent;
+  }
+  .navbar--oscuro .navbar__brand,
+  .navbar--oscuro .navbar__link {
+    color: oklch(99% 0.005 230);
+  }
+  .navbar--oscuro .navbar__cta {
+    background-color: var(--color-cta);
+    color: oklch(99% 0.005 230);
+  }
+
+  /* ── Modo claro: sobre hero blanco/pastel ── */
+  .navbar--claro {
+    background-color: oklch(from var(--color-surface) l c h / 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 oklch(from var(--color-text) l c h / 0.08);
+  }
+  .navbar--claro .navbar__brand,
+  .navbar--claro .navbar__link {
+    color: var(--color-text);
+  }
+  .navbar--claro .navbar__cta {
+    background-color: var(--color-primary);
+    color: oklch(from var(--color-surface) l c h);
+  }
+
+  /* ── Estado scrolled: siempre frosted glass ── */
+  .navbar.is-scrolled {
+    background-color: oklch(from var(--color-surface) l c h / 0.96) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    box-shadow: 0 1px 0 oklch(from var(--color-text) l c h / 0.1) !important;
+  }
+  .navbar.is-scrolled .navbar__brand,
+  .navbar.is-scrolled .navbar__link {
+    color: var(--color-text) !important;
+  }
+  .navbar.is-scrolled .navbar__cta {
+    background-color: var(--color-primary) !important;
+    color: oklch(from var(--color-surface) l c h) !important;
+  }
+
+  .navbar__inner {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: 1rem clamp(1.25rem, 5vw, 3rem);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .navbar__brand {
+    font-size: 1.0625rem;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .navbar__nav {
+    flex: 1;
+  }
+
+  .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .navbar__link {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+  }
+
+  .navbar__link:hover {
+    opacity: 1;
+  }
+
+  .navbar__cta {
+    margin-left: auto;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5625rem 1.375rem;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .navbar__cta:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    .navbar__nav {
+      display: none;
+    }
+    .navbar__inner {
+      justify-content: space-between;
+    }
+  }
+</style>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    const onScroll = () => {
+      if (window.scrollY > 30) {
+        navbar.classList.add('is-scrolled');
+      } else {
+        navbar.classList.remove('is-scrolled');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

@@ -1,0 +1,264 @@
+---
+interface Servicio {
+  nombre: string;
+  precio: number;
+  descripcion?: string;
+  duracion?: string;
+}
+
+interface Categoria {
+  nombre: string;
+  servicios: Servicio[];
+}
+
+interface Props {
+  /** Lista plana de servicios (sin categorías) */
+  servicios?: Servicio[];
+  /** Lista agrupada con accordion. Si se pasa, tiene prioridad sobre servicios. */
+  categorias?: Categoria[];
+  titulo?: string;
+  moneda?: string;
+}
+
+const {
+  servicios = [],
+  categorias = [],
+  titulo = 'Servicios',
+  moneda = '$',
+} = Astro.props;
+
+const usaCategorias = categorias.length > 0;
+---
+
+<section class="servicios-list" id="servicios">
+  <div class="servicios-list__inner">
+    <h2 class="servicios-list__heading">{titulo}</h2>
+
+    {usaCategorias ? (
+      /* ── Modo categorías: accordion por grupo ── */
+      <div class="servicios-list__grupos">
+        {categorias.map((cat, idx) => (
+          <details class="servicios-list__grupo" open={idx === 0}>
+            <summary class="servicios-list__grupo-header">
+              <span class="servicios-list__grupo-nombre">{cat.nombre}</span>
+              <span class="servicios-list__grupo-desde">
+                desde {moneda}{Math.min(...cat.servicios.map(s => s.precio)).toLocaleString('es-MX')}
+              </span>
+              <svg class="servicios-list__grupo-chevron" width="20" height="20"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </summary>
+            <ul class="servicios-list__items" role="list">
+              {cat.servicios.map((s) => (
+                <li class="servicios-list__item">
+                  <div class="servicios-list__info">
+                    <span class="servicios-list__nombre">{s.nombre}</span>
+                    {s.descripcion && (
+                      <span class="servicios-list__desc">{s.descripcion}</span>
+                    )}
+                  </div>
+                  <div class="servicios-list__meta">
+                    {s.duracion && (
+                      <span class="servicios-list__duracion">{s.duracion}</span>
+                    )}
+                    <span class="servicios-list__precio"
+                      aria-label={`Precio: ${moneda}${s.precio}`}>
+                      {moneda}{s.precio.toLocaleString('es-MX')}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))}
+      </div>
+    ) : (
+      /* ── Modo lista plana ── */
+      <ul class="servicios-list__items servicios-list__items--flat" role="list">
+        {servicios.map((s) => (
+          <li class="servicios-list__item">
+            <div class="servicios-list__info">
+              <span class="servicios-list__nombre">{s.nombre}</span>
+              {s.descripcion && (
+                <span class="servicios-list__desc">{s.descripcion}</span>
+              )}
+            </div>
+            <div class="servicios-list__meta">
+              {s.duracion && (
+                <span class="servicios-list__duracion">{s.duracion}</span>
+              )}
+              <span class="servicios-list__precio"
+                aria-label={`Precio: ${moneda}${s.precio}`}>
+                {moneda}{s.precio.toLocaleString('es-MX')}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</section>
+
+<style>
+  .servicios-list {
+    padding: clamp(4rem, 10vw, 7rem) clamp(1.25rem, 5vw, 3rem);
+    background-color: var(--color-surface);
+  }
+
+  .servicios-list__inner {
+    max-width: 52rem;
+    margin-inline: auto;
+  }
+
+  .servicios-list__heading {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin: 0 0 2.5rem;
+  }
+
+  /* ── Modo categorías ── */
+  .servicios-list__grupos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .servicios-list__grupo {
+    border: 1px solid oklch(from var(--color-text) l c h / 0.1);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .servicios-list__grupo-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.125rem 1.5rem;
+    background-color: var(--color-primary);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: filter 0.15s;
+  }
+
+  .servicios-list__grupo-header:hover {
+    filter: brightness(1.07);
+  }
+
+  .servicios-list__grupo-header::-webkit-details-marker { display: none; }
+
+  .servicios-list__grupo-nombre {
+    flex: 1;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: oklch(99% 0.005 230);
+  }
+
+  .servicios-list__grupo-desde {
+    font-size: 0.875rem;
+    color: oklch(99% 0.005 230 / 0.75);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .servicios-list__grupo-chevron {
+    color: oklch(99% 0.005 230 / 0.8);
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+
+  .servicios-list__grupo[open] .servicios-list__grupo-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* ── Items compartidos ── */
+  .servicios-list__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .servicios-list__items--flat {
+    border-top: 1px solid oklch(from var(--color-text) l c h / 0.1);
+    border-bottom: 1px solid oklch(from var(--color-text) l c h / 0.1);
+  }
+
+  .servicios-list__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.125rem 1.5rem;
+    border-bottom: 1px solid oklch(from var(--color-text) l c h / 0.07);
+    transition: background-color 0.15s;
+  }
+
+  .servicios-list__items--flat .servicios-list__item {
+    padding-inline: 0;
+  }
+
+  .servicios-list__item:last-child { border-bottom: none; }
+
+  .servicios-list__item:hover {
+    background-color: oklch(from var(--color-primary) l c h / 0.04);
+  }
+
+  .servicios-list__items--flat .servicios-list__item:hover {
+    background-color: transparent;
+    padding-inline: 0.75rem;
+    margin-inline: -0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  .servicios-list__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .servicios-list__nombre {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .servicios-list__desc {
+    font-size: 0.875rem;
+    color: oklch(from var(--color-text) l c h / 0.6);
+    line-height: 1.5;
+  }
+
+  .servicios-list__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .servicios-list__duracion {
+    font-size: 0.8125rem;
+    color: oklch(from var(--color-text) l c h / 0.45);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .servicios-list__precio {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-cta);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .servicios-list__grupo-desde { display: none; }
+    .servicios-list__duracion { display: none; }
+  }
+</style>

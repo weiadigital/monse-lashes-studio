@@ -1,0 +1,247 @@
+---
+/**
+ * T4 — Narrativo
+ * Monse Lashes Studio — Estética Facial / Extensiones de Pestañas
+ * Sector: estetica_general
+ * Energía: 3 (Equilibrada) · Formalidad: 3 (Profesional)
+ * Headline: Patrón E — Narrativo (frase del dueño)
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavbarFlotante from '../components/NavbarFlotante.astro';
+import HeroCinema from '../components/HeroCinema.astro';
+import HistoriaFilosofia from '../components/HistoriaFilosofia.astro';
+import ServiciosTabbed from '../components/ServiciosTabbed.astro';
+import Gallery from '../components/Gallery.astro';
+import SocialProofResenas from '../components/SocialProofResenas.astro';
+import CTAPrincipal from '../components/CTAPrincipal.astro';
+import ContactoWhatsApp from '../components/ContactoWhatsApp.astro';
+import Footer from '../components/Footer.astro';
+
+// ─── DATOS DEL CLIENTE ────────────────────────────────────────────────────────
+
+const negocio = {
+  nombre:      'Monse Lashes Studio',
+  descripcion: 'Estudio profesional dedicado al diseño de miradas a través de extensiones de pestañas de alta calidad, técnicas avanzadas de volumen y servicios de cuidado de cejas.',
+  telefono:    '5544231890',
+  whatsapp:    '5544231890',
+  direccion:   'Calle Hugonotes, Col. Miguel Hidalgo, Tláhuac, CDMX',
+  ciudad:      'Tláhuac',
+  cp:          '',
+  horario:     'Lunes a viernes 10:00–19:00 h | Sábados 9:00–16:00 h | Domingos con cita previa',
+  tipoSchema:  'BeautySalon',
+  email:       undefined,
+  redes: [
+    { nombre: 'Instagram', url: 'https://instagram.com/monselashes.cdmx' },
+    { nombre: 'Facebook', url: 'https://facebook.com/MonseLashesStudio' },
+  ],
+};
+
+const seo = {
+  titulo:      'Monse Lashes Studio — Extensiones de Pestañas en Tláhuac',
+  descripcion: 'Extensiones de pestañas clásicas, híbridas y volumen ruso en Tláhuac, CDMX. Diseño personalizado de miradas. Agenda tu cita por WhatsApp.',
+  canonicalUrl: 'https://monselashes.weia.digital',
+  ogImagen:    'https://monselashes.weia.digital/og-default.jpg',
+};
+
+const tokens = {
+  tokenPrimary:  'oklch(60% 0.14 340)',
+  tokenSurface:  'oklch(98% 0.006 340)',
+  tokenText:     'oklch(18% 0.020 340)',
+  tokenCta:      'oklch(55% 0.16 340)',
+};
+
+// Perfil de movimiento — E:3 → 'fluid'
+const motionProfile = 'fluid' as const;
+
+const fuentes = {
+  heading: 'Cormorant Garamond',
+  body:    'Inter',
+};
+
+// ─── CONTENIDO ────────────────────────────────────────────────────────────────
+
+const hero = {
+  titulo:    'Tu mirada, mi pasión',
+  subtitulo: 'Diseño personalizado de extensiones de pestañas que transforma. Técnicas avanzadas de volumen y cejas en Tláhuac.',
+  ctaTexto:  'Agenda tu cita',
+  ctaUrl:    `https://api.whatsapp.com/send?phone=521${negocio.whatsapp}&text=${encodeURIComponent('Hola, quiero agendar una cita para extensiones de pestañas')}`,
+  imagenSrc: '/images/hero.webp',
+  imagenAlt: 'Interior del estudio Monse Lashes Studio con estación de trabajo profesional para extensiones de pestañas',
+  supratitulo: 'Estudio de Pestañas',
+  ctaSecundarioTexto: 'Ver servicios',
+  ctaSecundarioUrl:   '#servicios',
+  stats: [
+    { numero: '6+', label: 'técnicas especializadas' },
+    { numero: '100%', label: 'diseño personalizado' },
+  ],
+};
+
+// Historia / filosofía
+const historia = {
+  tieneHistoria: true,
+  cita: 'Tu mirada, mi pasión. Diseño personalizado que transforma.',
+  autor: 'Monse Lashes Studio',
+  textoApoyo: 'Cada rostro es único, y por eso cada set de extensiones lo diseñamos pensando en la forma de tus ojos, tu estilo de vida y lo que quieres transmitir. Trabajamos con productos de alta calidad y técnicas avanzadas para que el resultado sea seguro, duradero y, sobre todo, tuyo.',
+  imagenSrc: '/images/historia.webp',
+  imagenAlt: 'Detalle del trabajo de diseño de pestañas en el estudio Monse Lashes',
+};
+
+// Servicios por categorías
+const categorias = [
+  {
+    nombre: 'Extensiones',
+    icono: '✨',
+    servicios: [
+      { nombre: 'Clásicas (1x1)', precio: 650, descripcion: 'Efecto natural, una extensión por cada pestaña', duracion: '1 hr 30 min' },
+      { nombre: 'Híbridas', precio: 800, descripcion: 'Mezcla de técnica clásica y volumen', duracion: '1 hr 45 min' },
+      { nombre: 'Volumen Ruso (2D-3D)', precio: 1000, descripcion: 'Abanicos de 2-3 fibras para mayor densidad', duracion: '2 hrs' },
+      { nombre: 'Mega Volumen', precio: 1300, descripcion: 'Máxima densidad y dramatismo', duracion: '2 hrs 15 min' },
+      { nombre: 'Retoque', precio: 400, descripcion: 'Mantenimiento según semanas y técnica', duracion: '1 hr' },
+    ],
+  },
+  {
+    nombre: 'Tratamientos',
+    icono: '🌿',
+    servicios: [
+      { nombre: 'Lash Lift + Tinte', precio: 500, descripcion: 'Rizado permanente con tinte incluido', duracion: '1 hr' },
+      { nombre: 'Laminado de Cejas', precio: 600, descripcion: 'Brow lamination + diseño y perfilado', duracion: '45 min' },
+      { nombre: 'Retiro Profesional', precio: 150, descripcion: 'Retiro seguro sin dañar tus pestañas naturales', duracion: '30 min' },
+    ],
+  },
+];
+
+const galeria = [
+  { src: '/images/galeria-1.webp', alt: 'Set de extensiones de pestañas volumen ruso terminado' },
+  { src: '/images/galeria-2.webp', alt: 'Resultado de laminado de cejas y diseño en el estudio' },
+  { src: '/images/galeria-3.webp', alt: 'Estación de trabajo profesional en Monse Lashes Studio' },
+  { src: '/images/galeria-4.webp', alt: 'Área de espera cómoda del estudio en Tláhuac' },
+];
+
+const resenas: { nombre: string; texto: string; estrellas: number }[] = [
+  // SOLO reales — pendientes del cliente
+];
+
+const cta = {
+  titulo:    '¿Lista para transformar tu mirada?',
+  subtitulo: 'Diseño personalizado que se adapta a ti. Promoción de apertura: 15% de descuento en tu primer set completo de Volumen.',
+  ctaTexto:  'Agenda tu cita por WhatsApp',
+  ctaUrl:    hero.ctaUrl,
+};
+
+const mapsEmbed = '';
+---
+
+<BaseLayout
+  titulo={seo.titulo}
+  descripcion={seo.descripcion}
+  canonicalUrl={seo.canonicalUrl}
+  ogImagen={seo.ogImagen}
+  schema={{
+    nombre:      negocio.nombre,
+    descripcion: negocio.descripcion,
+    telefono:    negocio.telefono,
+    direccion:   negocio.direccion,
+    ciudad:      negocio.ciudad,
+    cp:          negocio.cp,
+    horario:     negocio.horario,
+    tipoNegocio: negocio.tipoSchema,
+  }}
+  telefono={negocio.whatsapp}
+  mensajeWa={`Hola, quiero agendar una cita en ${negocio.nombre}`}
+  {...tokens}
+  motionProfile={motionProfile}
+  fuenteHeading={fuentes.heading}
+  fuenteBody={fuentes.body}
+>
+  {/* ── NAVBAR flotante (modo oscuro — sobre imagen del hero) ── */}
+  <NavbarFlotante
+    nombre={negocio.nombre}
+    links={[
+      { texto: 'Servicios', href: '#servicios' },
+      { texto: 'Galería', href: '#galeria' },
+      { texto: 'Ubicación', href: '#contacto' },
+    ]}
+    ctaTexto={hero.ctaTexto}
+    ctaUrl={hero.ctaUrl}
+    modo="oscuro"
+  />
+
+  {/* ── SECCIÓN 1: Hero cinema ── */}
+  <HeroCinema
+    titulo={hero.titulo}
+    subtitulo={hero.subtitulo}
+    ctaTexto={hero.ctaTexto}
+    ctaUrl={hero.ctaUrl}
+    imagenSrc={hero.imagenSrc}
+    imagenAlt={hero.imagenAlt}
+    supratitulo={hero.supratitulo}
+    ctaSecundarioTexto={hero.ctaSecundarioTexto}
+    ctaSecundarioUrl={hero.ctaSecundarioUrl}
+    stats={hero.stats}
+  />
+
+  {/* ── SECCIÓN 2: Historia / filosofía del negocio ── */}
+  {historia.tieneHistoria && (
+    <HistoriaFilosofia
+      cita={historia.cita}
+      autor={historia.autor}
+      textoApoyo={historia.textoApoyo}
+      imagenSrc={historia.imagenSrc}
+      imagenAlt={historia.imagenAlt}
+    />
+  )}
+
+  {/* ── SECCIÓN 3: Servicios por categorías ── */}
+  <div id="servicios">
+    <ServiciosTabbed
+      categorias={categorias}
+      titulo="Lo que hacemos"
+    />
+  </div>
+
+  {/* ── SECCIÓN 4: Galería ── */}
+  <div id="galeria">
+    <Gallery
+      imagenes={galeria}
+      titulo="Nuestro trabajo"
+      columnas={3}
+    />
+  </div>
+
+  {/* ── SECCIÓN 5: Testimonios (solo si hay reales) ── */}
+  {resenas.length > 0 && (
+    <SocialProofResenas
+      reseñas={resenas}
+      titulo="Lo que dicen nuestras clientas"
+    />
+  )}
+
+  {/* ── SECCIÓN 6: CTA con color primario ── */}
+  <CTAPrincipal
+    titulo={cta.titulo}
+    subtitulo={cta.subtitulo}
+    ctaTexto={cta.ctaTexto}
+    ctaUrl={cta.ctaUrl}
+    variante="color"
+  />
+
+  {/* ── SECCIÓN 7: Contacto + Mapa ── */}
+  <div id="contacto">
+    <ContactoWhatsApp
+      telefono={negocio.whatsapp}
+      direccion={negocio.direccion}
+      horario={negocio.horario}
+      titulo="Visítanos"
+      googleMapsEmbed={mapsEmbed || undefined}
+    />
+  </div>
+
+  {/* ── SECCIÓN 8: Footer ── */}
+  <Footer
+    negocio={negocio.nombre}
+    direccion={negocio.direccion}
+    telefono={negocio.telefono}
+    redes={negocio.redes}
+  />
+</BaseLayout>
